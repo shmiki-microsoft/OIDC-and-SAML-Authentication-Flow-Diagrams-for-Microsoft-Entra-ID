@@ -1,0 +1,19 @@
+sequenceDiagram
+    participant User
+    participant Browser
+    participant Client (App) as Web Server
+    participant Microsoft Entra ID (/oauth2/v2.0/authorize)
+    participant Microsoft Entra ID (/oauth2/v2.0/token)
+    
+    User->>Browser: アプリにアクセス
+    Browser->> Client (App): アプリにアクセス
+    Client (App)->>Browser: 認可リクエストリクエストを送るように指示
+    Browser->>Microsoft Entra ID (/oauth2/v2.0/authorize): 認可リクエスト (code)
+    Microsoft Entra ID (/oauth2/v2.0/authorize)->>Browser: ログイン & 同意画面
+    Browser->>User: ログイン & 同意画面
+    User->>Browser: 認証情報入力 & 同意
+    Browser->>Microsoft Entra ID (/oauth2/v2.0/authorize): 認証 同意の情報を送信
+    Microsoft Entra ID (/oauth2/v2.0/authorize)->>Browser: 認可コード付きのリダイレクト
+    Browser->>Client (App): リダイレクトURL（認可コード）
+    Client (App)->>Microsoft Entra ID (/oauth2/v2.0/token): トークンリクエスト（認可コード + クライアントシークレット）
+    Microsoft Entra ID (/oauth2/v2.0/token)->>Client (App): アクセストークン + IDトークン + （リフレッシュトークン）

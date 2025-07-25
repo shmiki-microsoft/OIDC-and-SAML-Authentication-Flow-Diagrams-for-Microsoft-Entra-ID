@@ -1,0 +1,37 @@
+sequenceDiagram
+    participant User
+    participant Browser
+    participant Client (App) as Web Server
+    participant Microsoft Entra ID (/oauth2/v2.0/authorize)
+    participant Microsoft Entra ID (/oauth2/v2.0/token)
+    participant Web API (resource 1)
+    participant Downstream API (resource 2)
+
+    %% Authorization Code Flow
+    User->>Browser: アプリにアクセス
+    Browser->>Client (App): アプリにアクセス
+    Client (App)->>Browser: 認可リクエストを送るように指示
+    Browser->>Microsoft Entra ID (/oauth2/v2.0/authorize): 認可リクエスト (code)
+    Microsoft Entra ID (/oauth2/v2.0/authorize)->>Browser: ログイン & 同意画面
+    Browser->>User: ログイン & 同意画面
+    User->>Browser: 認証情報入力 & 同意
+    Browser->>Microsoft Entra ID (/oauth2/v2.0/authorize): 認証・同意情報を送信
+    Microsoft Entra ID (/oauth2/v2.0/authorize)->>Browser: 認可コード付きでリダイレクト
+    Browser->>Client (App): 認可コードを含むリダイレクト
+    Client (App)->>Microsoft Entra ID (/oauth2/v2.0/token): トークンリクエスト（認可コード + クライアントシークレット）
+    Microsoft Entra ID (/oauth2/v2.0/token)->>Client (App): アクセストークン + IDトークン + リフレッシュトークン
+
+    %% アクセストークンを使って Web API を呼び出す
+    Client (App)->>Web API (resource 1): アクセストークンを送って API 呼び出し
+
+    %% Web API で OBO フロー実行
+    Web API (resource 1)->>Microsoft Entra ID (/oauth2/v2.0/token):"OBO トークンリクエスト<br>(grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer<br/>requested_token_use=on_behalf_of<br/>assertion=resource 1用のアクセストークン)"
+    Microsoft Entra ID (/oauth2/v2.0/token)->>Web API (resource 1): Downstream API 用のアクセストークン
+
+    %% Web API が Downstream API にアクセス
+    Web API (resource 1)->>Downstream API (resource 2): アクセストークンを送って呼び出し
+    Downstream API (resource 2)->>Web API (resource 1): データ返却
+    Web API (resource 1)->>Client (App): API 結果返却
+    Client (App)->>Browser: アプリ画面表示など
+    Browser->>User: アプリ画面表示など
+

@@ -1,0 +1,19 @@
+sequenceDiagram
+    participant User
+    participant Browser
+    participant SPA in Browser
+    participant Frontend Server for SPA
+    participant Microsoft Entra ID (/oauth2/v2.0/authorize)
+    User->>Browser: SPA にアクセス
+    Browser->>Frontend Server for SPA: SPA にアクセス
+    Frontend Server for SPA ->> Browser:SPA 用のコードを渡す
+    Note over Browser,SPA in Browser:SPA が起動
+    SPA in Browser->>Browser:認可リクエストリクエストを送るように指示
+    Browser->>Microsoft Entra ID (/oauth2/v2.0/authorize): 認可リクエスト（response_type=token/id_token）
+    Microsoft Entra ID (/oauth2/v2.0/authorize)->>Browser: ログイン & 同意
+    Browser->>User: ログイン & 同意
+    User->>Browser:認証情報入力 & 同意
+    Browser->>Microsoft Entra ID (/oauth2/v2.0/authorize): 認証情報入力 & 同意
+    Microsoft Entra ID (/oauth2/v2.0/authorize)->>SPA in Browser: リダイレクト（アクセストークンとIDトークンがURLフラグメントに含まれる）
+    SPA in Browser->>SPA in Browser: フラグメントからトークン抽出
+    SPA in Browser->>User: アプリ画面表示

@@ -1,0 +1,29 @@
+sequenceDiagram
+    participant User
+    participant Browser
+    participant SPA in Browser
+    participant Frontend Server for SPA
+    participant Microsoft Entra ID (/oauth2/v2.0/authorize)
+    participant Microsoft Entra ID (/oauth2/v2.0/token)
+
+    User->>Browser: SPA にアクセス
+    Browser->>Frontend Server for SPA: SPA にアクセス
+    Frontend Server for SPA->>Browser: SPA 用のコードを渡す
+    Note over Browser, SPA in Browser: SPA が起動
+
+    SPA in Browser->>SPA in Browser: PKCE コードチャレンジを生成
+    SPA in Browser->>Browser: 認可リクエストを送るように指示（code_challenge含む）
+    Browser->>Microsoft Entra ID (/oauth2/v2.0/authorize): 認可リクエスト（response_type=code）
+
+    Microsoft Entra ID (/oauth2/v2.0/authorize)->>Browser: ログイン & 同意画面
+    Browser->>User: ログイン & 同意
+    User->>Browser: 認証情報入力 & 同意
+    Browser->>Microsoft Entra ID (/oauth2/v2.0/authorize): 認証情報送信
+
+    Microsoft Entra ID (/oauth2/v2.0/authorize)->>SPA in Browser: 認可コード付きでリダイレクト
+
+    SPA in Browser->>Microsoft Entra ID (/oauth2/v2.0/token): トークンリクエスト（code + code_verifier）
+    Microsoft Entra ID (/oauth2/v2.0/token)->>SPA in Browser: アクセストークン + IDトークン + （リフレッシュトークン）
+
+    SPA in Browser->>Browser: アプリ画面表示
+    Browser->>User: アプリ画面表示

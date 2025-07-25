@@ -1,0 +1,18 @@
+sequenceDiagram
+    participant User
+    participant Browser
+    participant SP (Service Provider)
+    participant Microsoft Entra ID (IdP)
+
+    User->>Browser: アクセス
+    Browser->>SP (Service Provider): アクセス
+    SP (Service Provider)->>Browser: SAML AuthnRequest を生成してリダイレクト
+    Browser->>Microsoft Entra ID (IdP): SAML AuthnRequest を含むリクエスト
+    Microsoft Entra ID (IdP)->>Browser: ログイン画面表示
+    Browser->>User: ログイン画面表示
+    User->>Browser: 資格情報入力（ログイン）
+    Browser->>Microsoft Entra ID (IdP): 資格情報入力（ログイン）
+    Microsoft Entra ID (IdP)->>Browser: SAML Response（署名付き）を POST
+    Browser->>SP (Service Provider): SAML Response を含む POST（ACS エンドポイント）
+    SP (Service Provider)->>Browser: 認証後のアプリケーション画面を表示
+    Browser->>User: 認証後のアプリケーション画面を表示

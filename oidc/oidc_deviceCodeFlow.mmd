@@ -1,0 +1,18 @@
+sequenceDiagram
+    participant User
+    participant Browser
+    participant Microsoft Entra ID (/oauth2/v2.0/devicecode)
+    participant Microsoft Entra ID (/oauth2/v2.0/token)
+    participant Microsoft Entra ID (/oauth2/deviceauth)
+
+    Device->>Microsoft Entra ID (/oauth2/v2.0/devicecode): デバイスコード要求
+    Microsoft Entra ID (/oauth2/v2.0/devicecode)->>Device: デバイスコード + ユーザーコード + 認証URL
+    Device->>User: ユーザーコードと認証URLを表示
+    User->>Browser: 認証URLにアクセス
+    Browser->>Microsoft Entra ID (/oauth2/deviceauth): 認証 & ユーザーコード入力
+    Microsoft Entra ID (/oauth2/deviceauth)->>User: 認証成功（ログイン・同意）
+    loop ポーリング
+        Device->>Microsoft Entra ID (/oauth2/v2.0/token): トークン要求（デバイスコード）
+        Microsoft Entra ID (/oauth2/v2.0/token)-->>Device: 認証待ち or エラー or アクセストークン
+    end
+    Microsoft Entra ID (/oauth2/v2.0/token)->>Device: アクセストークン + IDトークン

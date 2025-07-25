@@ -1,0 +1,14 @@
+sequenceDiagram
+    participant User
+    participant Browser
+    participant SP (Service Provider)
+    participant Microsoft Entra ID (IdP)
+
+    User->>Browser: IdP ポータルにログイン
+    Browser->>Microsoft Entra ID (IdP): IdP ポータルにログイン
+    User->>Browser: アプリ一覧から SP を選択
+    Browser->>Microsoft Entra ID (IdP): アプリ一覧から SP を選択
+    Microsoft Entra ID (IdP)->>Browser: SAML Response（署名付き）を POST
+    Browser->>SP (Service Provider): SAML Response を含む POST（ACS エンドポイント）
+    SP (Service Provider)->>Browser: 認証後のアプリケーション画面を表示
+    Browser->>User: 認証後のアプリケーション画面を表示

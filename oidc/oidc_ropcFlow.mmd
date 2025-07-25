@@ -1,0 +1,8 @@
+sequenceDiagram
+    participant User
+    participant Client
+    participant Microsoft Entra ID (/oauth2/v2.0/token)
+
+    User->>Client: ユーザー名 + パスワード入力
+    Client->>Microsoft Entra ID (/oauth2/v2.0/token): トークンリクエスト（ユーザー名 + パスワード + client_id + secret）
+    Microsoft Entra ID (/oauth2/v2.0/token)->>Client: アクセストークン + IDトークン
