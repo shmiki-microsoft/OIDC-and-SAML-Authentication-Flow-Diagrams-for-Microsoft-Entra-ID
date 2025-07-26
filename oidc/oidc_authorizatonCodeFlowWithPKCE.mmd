@@ -18,7 +18,8 @@ sequenceDiagram
     Microsoft Entra ID (/oauth2/v2.0/authorize)->>Browser: ログイン & 同意画面
     Browser->>User: ログイン & 同意
     User->>Browser: 認証情報入力 & 同意
-    Browser->>Microsoft Entra ID (/oauth2/v2.0/authorize): 認証情報送信
+    Browser->>SPA in Browser: 認証情報入力 & 同意
+    SPA in Browser->>Microsoft Entra ID (/oauth2/v2.0/authorize): 認証情報送信
 
     Microsoft Entra ID (/oauth2/v2.0/authorize)->>SPA in Browser: 認可コード付きでリダイレクト
 
