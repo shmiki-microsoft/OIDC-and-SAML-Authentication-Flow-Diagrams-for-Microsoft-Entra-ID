@@ -8,7 +8,7 @@ sequenceDiagram
     User->>Browser: アプリにアクセス
     Browser->> Client (App): アプリにアクセス
     Client (App)->>Browser: 認可リクエストリクエストを送るように指示
-    Browser->>Microsoft Entra ID (/oauth2/v2.0/authorize): 認可リクエスト (code)
+    Browser->>Microsoft Entra ID (/oauth2/v2.0/authorize): 認可リクエスト
     Microsoft Entra ID (/oauth2/v2.0/authorize)->>Browser: ログイン & 同意画面
     Browser->>User: ログイン & 同意画面
     User->>Browser: 認証情報入力 & 同意
